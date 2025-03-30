@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { View, Text, TouchableOpacity, TextInput, StyleSheet,Pressable,ScrollView } from "react-native";
+//import DateTimePicker from "@react-native-community/datetimepicker";
 import Geolocation from "react-native-geolocation-service";
 import { request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import axios from "axios";
+import { StackActions } from '@react-navigation/native';
+
+import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 const PlanTrip = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState("Set Dates");
   const [location, setLocation] = useState("Fetching location...");
   const [weather, setWeather] = useState("Fetching weather...");
-
+  const navigation = useNavigation(); // Hook to access navigation
+  const router = useRouter(); 
   // Request location permission and fetch the current location
   useEffect(() => {
     request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then((result) => {
@@ -46,6 +51,7 @@ const PlanTrip = () => {
 
 
   return (
+    <ScrollView>
     <View style={styles.container}>
       <Text style={styles.title}>Plan Your Trip</Text>
 
@@ -89,17 +95,26 @@ const PlanTrip = () => {
         <Text style={styles.boxText}>🌤 Weather</Text>
         <Text style={styles.subText}>{weather}</Text>
       </View>
+      <View style={styles.box}>
+      <Pressable onPress={() => router.push('/newpage')}>
+        <Text style={styles.boxText}>🧳To pack</Text>
+        <Text style={styles.subText}> Add items </Text>
+        </Pressable>
+      </View>
 
       {/* Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Create</Text>
-        </TouchableOpacity>
+                 
+        <Pressable style={styles.button} onPress={() => router.push('/trip')}>
+        <Text style={styles.buttonText}>Create</Text>
+        </Pressable>
+                    
       </View>
     </View>
+    </ScrollView>
   );
 };
 
@@ -155,6 +170,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 16,
   },
+  
 });
 
 export default PlanTrip;
