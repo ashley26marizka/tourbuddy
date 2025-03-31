@@ -11,5 +11,5 @@
   "include": [
     "app/**/*.js",
     ".expo/types/**/*.js"
-, "app/+not-found.js", "app/_layout.js"  ]
+, "app/+not-found.js", "app/_layout.js", "app/firebaseconfig.js", "app/expenses.js"  ]
 }

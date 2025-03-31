@@ -6,7 +6,9 @@ import PlanScreen from './plan';
 import LoginScreen from './login';
 import SignUpScreen from './signup';
 import TripScreen from './trip';
-import NewPage from './newpage';
+import PackingList from './newpage';
+import CreateTrip from './createtrip';
+import ExpenseTracker from './expenses.js';
 import './firebaseconfig';
        // Ensure correct path
 
@@ -21,7 +23,8 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stact.Screen name="Trip" component={TripScreen} />
-        <Stack.Screen name="new" component={NewPage} />
+        <Stack.Screen name="new" component={PackingList} />
+        <Stack.Screen name="calc" component={ExpenseTracker} />
       </Stack.Navigator>
     </NavigationContainer>
   );

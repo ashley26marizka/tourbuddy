@@ -101,6 +101,21 @@ const PlanTrip = () => {
         <Text style={styles.subText}> Add items </Text>
         </Pressable>
       </View>
+     
+      <View style={styles.box}>
+  <Pressable onPress={() => router.push('/createtrip')}>
+    <Text style={styles.boxText}>🗺️ Planning</Text>
+    <Text style={styles.subText}> Plan trip </Text>
+  </Pressable>
+</View>
+
+<View style={styles.box}>
+  <Pressable onPress={() => router.push('/expenses')}>
+    <Text style={styles.boxText}>💰 Budget</Text>
+    <Text style={styles.subText}> Calculate </Text>
+  </Pressable>
+</View>
+
 
       {/* Buttons */}
       <View style={styles.buttonContainer}>
