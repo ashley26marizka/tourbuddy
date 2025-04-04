@@ -4,6 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { db } from "./firebaseconfig.js";
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 
 const CreateTrip = () => {
     const [tripName, setTripName] = useState("");
@@ -30,10 +31,10 @@ const CreateTrip = () => {
         try {
             if (editingTrip) {
                 const tripRef = doc(db, "trips", editingTrip.id);
-                await updateDoc(tripRef, { name: tripName, date: date.toISOString() });
+                await updateDoc(tripRef, { name: tripName, date: Timestamp.fromDate(date) });
                 setEditingTrip(null);
             } else {
-                await addDoc(collection(db, "trips"), { name: tripName, date: date.toISOString() });
+                await addDoc(collection(db, "trips"), { name: tripName, date: Timestamp.fromDate(date) });
             }
             setTripName("");
             fetchTrips();
@@ -82,7 +83,7 @@ const CreateTrip = () => {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     <View style={styles.tripItem}>
-                        <Text style={styles.tripText}>{item.name} - {new Date(item.date).toDateString()}</Text>
+                        <Text style={styles.tripText}>{item.name} - {item.date?.toDate().toDateString()}</Text>
                         <TouchableOpacity onPress={() => { setTripName(item.name); setEditingTrip(item); }}>
                             <FontAwesome name="pencil" size={20} color="blue" />
                         </TouchableOpacity>

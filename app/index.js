@@ -73,6 +73,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   titleWrapper: {
+    alignItems: 'center',
+
     padding: 6,
   },
   titleText: {
@@ -80,6 +82,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   yearWrapper: {
+    alignItems: 'center',
+
     padding: 6,
   },
   yearText: {
@@ -93,8 +97,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 500,
+    height: 300,
     borderRadius: 10,
   },
   subtitleWrapper: {
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonWrapper: {
-    marginTop: 25,
+    margin: 25,
     alignItems: 'center',
   },
   button: {

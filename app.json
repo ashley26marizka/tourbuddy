@@ -13,14 +13,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/tourbuddy.jpg",
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.APP"
     },
     "web": {
       "bundler": "metro",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/tourbuddy.jpg"
     },
     "plugins": [
       "expo-router",

@@ -1,134 +1,44 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, StyleSheet,Pressable,ScrollView } from "react-native";
-//import DateTimePicker from "@react-native-community/datetimepicker";
-import Geolocation from "react-native-geolocation-service";
-import { request, PERMISSIONS, RESULTS } from "react-native-permissions";
-import axios from "axios";
-import { StackActions } from '@react-navigation/native';
-
-import { useNavigation } from '@react-navigation/native';
-import { useRouter } from 'expo-router';
+import React, { useState } from "react";
+import { View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import { MotiView } from "moti";
 
 const PlanTrip = () => {
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState("Set Dates");
-  const [location, setLocation] = useState("Fetching location...");
-  const [weather, setWeather] = useState("Fetching weather...");
-  const navigation = useNavigation(); // Hook to access navigation
-  const router = useRouter(); 
-  // Request location permission and fetch the current location
-  useEffect(() => {
-    request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then((result) => {
-      if (result === RESULTS.GRANTED) {
-        Geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            setLocation(`📍 ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
-            fetchWeather(latitude, longitude);
-          },
-          (error) => setLocation("Location unavailable"),
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-        );
-      } else {
-        setLocation("Permission denied");
-      }
-    });
-  }, []);
-
-  // Fetch weather data
-  const fetchWeather = async (lat, lon) => {
-    const API_KEY = "YOUR_OPENWEATHERMAP_API_KEY"; // Replace with your API key
-    try {
-      const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
-      );
-      setWeather(`🌤 ${response.data.main.temp}°C, ${response.data.weather[0].description}`);
-    } catch (error) {
-      setWeather("Weather data unavailable");
-    }
-  };
-  const [tripName, setTripName] = useState('');
-
+  const router = useRouter();
 
   return (
     <ScrollView>
-    <View style={styles.container}>
-      <Text style={styles.title}>Plan Your Trip</Text>
+      <View style={styles.container}>
+        <Text style={styles.title}>Plan Your Trip</Text>
 
-      {/* Trip Name Input */}
-      <View style={{ marginTop: 10 ,padding:20,borderColor:"white",}}>
-            <TextInput
-              value={tripName}
-              onChangeText={(text) => setTripName(text)}
-              style={{ fontSize: 25, fontWeight: 'bold', color: '#c19d6',borderColor:"white" }}
-              placeholderTextColor="#c19d6"
-              placeholder="Trip Name"
-            />
-          </View>
-
-      {/* Calendar Icon + Itinerary Box */}
-      <TouchableOpacity style={styles.box} onPress={() => setShowDatePicker(true)}>
-        <Text style={styles.boxText}>📅 Itinerary</Text>
-        <Text style={styles.subText}>{selectedDate}</Text>
-      </TouchableOpacity>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, date) => {
-            setShowDatePicker(false);
-            if (date) setSelectedDate(date.toDateString());
-          }}
-        />
-      )}
-
-      {/* Current Location Box */}
-      <View style={styles.box}>
-        <Text style={styles.boxText}>🌍 TimeZone</Text>
-        <Text style={styles.subText}>{location}</Text>
+        {[
+          { title: "🗺️ Map", subtitle: "View map", route: "/map" },
+          { title: "🌤 Weather", subtitle: "Check forecast", route: "/weather" },
+          { title: "🧳 To pack", subtitle: "Add items", route: "/newpage" },
+          { title: "📅 Itinerary", subtitle: "Plan your trip", route: "/createtrip" },
+          { title: "💰 Budget", subtitle: "Calculate expenses", route: "/expenses" },
+          { title: "🏞️ Places",subtitle:"Tourist Places",route:"/trip"},
+        ].map((item, index) => (
+          <MotiView
+            from={{ translateX: 300, opacity: 0 }}
+            animate={{ translateX: 0, opacity: 1 }}
+            transition={{
+              type: "spring",
+              damping: 15,
+              stiffness: 120,
+              delay: index * 150, 
+            }}
+            key={item.route}
+          >
+            <View style={styles.box}>
+              <Pressable onPress={() => router.push(item.route)}>
+                <Text style={styles.boxText}>{item.title}</Text>
+                <Text style={styles.subText}>{item.subtitle}</Text>
+              </Pressable>
+            </View>
+          </MotiView>
+        ))}
       </View>
-
-      {/* Weather Forecast Box (Replacing "Choose Image") */}
-      <View style={styles.box}>
-        <Text style={styles.boxText}>🌤 Weather</Text>
-        <Text style={styles.subText}>{weather}</Text>
-      </View>
-      <View style={styles.box}>
-      <Pressable onPress={() => router.push('/newpage')}>
-        <Text style={styles.boxText}>🧳To pack</Text>
-        <Text style={styles.subText}> Add items </Text>
-        </Pressable>
-      </View>
-     
-      <View style={styles.box}>
-  <Pressable onPress={() => router.push('/createtrip')}>
-    <Text style={styles.boxText}>🗺️ Planning</Text>
-    <Text style={styles.subText}> Plan trip </Text>
-  </Pressable>
-</View>
-
-<View style={styles.box}>
-  <Pressable onPress={() => router.push('/expenses')}>
-    <Text style={styles.boxText}>💰 Budget</Text>
-    <Text style={styles.subText}> Calculate </Text>
-  </Pressable>
-</View>
-
-
-      {/* Buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
-                 
-        <Pressable style={styles.button} onPress={() => router.push('/trip')}>
-        <Text style={styles.buttonText}>Create</Text>
-        </Pressable>
-                    
-      </View>
-    </View>
     </ScrollView>
   );
 };
@@ -145,20 +55,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#CCC",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 15,
-    backgroundColor: "#FFF",
-  },
   box: {
     backgroundColor: "#FFF",
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
-    elevation: 3, // Shadow effect
+    elevation: 3,
   },
   boxText: {
     fontSize: 16,
@@ -169,23 +71,6 @@ const styles = StyleSheet.create({
     color: "#555",
     marginTop: 5,
   },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  button: {
-    backgroundColor: "#007BFF",
-    padding: 10,
-    borderRadius: 8,
-    width: "45%",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#FFF",
-    fontSize: 16,
-  },
-  
 });
 
 export default PlanTrip;

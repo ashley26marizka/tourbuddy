@@ -9,6 +9,8 @@ import TripScreen from './trip';
 import PackingList from './newpage';
 import CreateTrip from './createtrip';
 import ExpenseTracker from './expenses.js';
+import NearbyAttractionsScreen from './map';
+import WeatherSearchScreen from './weather';
 import './firebaseconfig';
        // Ensure correct path
 
@@ -22,9 +24,12 @@ export default function App() {
         <Stack.Screen name="Plan" component={PlanScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
-        <Stact.Screen name="Trip" component={TripScreen} />
+        <Stack.Screen name="Trip" component={TripScreen} />
         <Stack.Screen name="new" component={PackingList} />
         <Stack.Screen name="calc" component={ExpenseTracker} />
+        <Stack.Screen name="maps" component={NearbyAttractionsScreen}/>
+        <Stack.Screen name="weather" component={WeatherSearchScreen}/>
+
       </Stack.Navigator>
     </NavigationContainer>
   );

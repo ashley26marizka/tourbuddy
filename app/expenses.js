@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, ScrollView, StyleSheet, FlatList, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, ScrollView, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import { PieChart, BarChart } from 'react-native-chart-kit';
+import { db, auth } from './firebaseconfig';
+import { collection, addDoc, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -8,13 +10,38 @@ const ExpenseTracker = () => {
   const [expenses, setExpenses] = useState([]);
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
+  const user = auth.currentUser; // Get logged-in user
 
-  const addExpense = () => {
-    if (amount && category) {
-      setExpenses([...expenses, { category, amount: parseFloat(amount) }]);
+  useEffect(() => {
+    if (user) {
+      fetchExpenses();
+    }
+  }, [user]);
+
+  const fetchExpenses = async () => {
+    if (!user) return;
+    
+    const q = query(collection(db, "expenses"), where("userId", "==", user.uid));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const expensesList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setExpenses(expensesList);
+    });
+
+    return unsubscribe;
+  };
+
+  const addExpense = async () => {
+    if (amount && category && user) {
+      const newExpense = { category, amount: parseFloat(amount), userId: user.uid };
+      await addDoc(collection(db, "expenses"), newExpense);
       setAmount('');
       setCategory('');
     }
+  };
+
+  const removeExpense = async (id) => {
+    await deleteDoc(doc(db, "expenses", id));
   };
 
   const getPieChartData = () => {
@@ -47,10 +74,14 @@ const ExpenseTracker = () => {
     return colors[index % colors.length];
   };
 
+  const getTotalExpenses = () => {
+    return expenses.reduce((total, expense) => total + expense.amount, 0).toFixed(2);
+  };
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Expense Tracker</Text>
-      
+
       <TextInput
         placeholder="Enter Amount"
         keyboardType="numeric"
@@ -58,16 +89,16 @@ const ExpenseTracker = () => {
         onChangeText={setAmount}
         style={styles.input}
       />
-      
+
       <TextInput
         placeholder="Enter Category (Food, Activity, etc.)"
         value={category}
         onChangeText={setCategory}
         style={styles.input}
       />
-      
+
       <Button title="Add Expense" onPress={addExpense} />
-      
+
       {expenses.length > 0 && (
         <View style={{ marginTop: 20 }}>
           <Text style={styles.chartTitle}>Expense Distribution</Text>
@@ -101,12 +132,17 @@ const ExpenseTracker = () => {
         </View>
       )}
 
+      <Text style={styles.totalExpense}>Total Expenses: ₹{getTotalExpenses()}</Text>
+
       <FlatList
         data={expenses}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.expenseItem}>
-            <Text style={styles.expenseText}>{item.category}: ${item.amount.toFixed(2)}</Text>
+            <Text style={styles.expenseText}>{item.category}: ₹{item.amount.toFixed(2)}</Text>
+            <TouchableOpacity onPress={() => removeExpense(item.id)}>
+              <Text style={styles.deleteText}>Remove</Text>
+            </TouchableOpacity>
           </View>
         )}
       />
@@ -135,13 +171,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10,
   },
+  totalExpense: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    textAlign: 'center',
+  },
   expenseItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
   expenseText: {
     fontSize: 16,
+  },
+  deleteText: {
+    fontSize: 16,
+    color: 'red',
   }
 });
 
