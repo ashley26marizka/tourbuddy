@@ -6,11 +6,12 @@ import PlanScreen from './plan';
 import LoginScreen from './login';
 import SignUpScreen from './signup';
 import TripScreen from './trip';
-import PackingList from './newpage';
+import PackingList from './packing';
 import CreateTrip from './createtrip';
 import ExpenseTracker from './expenses.js';
 import NearbyAttractionsScreen from './map';
 import WeatherSearchScreen from './weather';
+import MemoriesScreen from './image';
 import './firebaseconfig';
        // Ensure correct path
 
@@ -29,7 +30,7 @@ export default function App() {
         <Stack.Screen name="calc" component={ExpenseTracker} />
         <Stack.Screen name="maps" component={NearbyAttractionsScreen}/>
         <Stack.Screen name="weather" component={WeatherSearchScreen}/>
-
+        <Stack.Screen name="memories" component={MemoriesScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

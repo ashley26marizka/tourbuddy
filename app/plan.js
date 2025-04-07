@@ -13,11 +13,12 @@ const PlanTrip = () => {
 
         {[
           { title: "🗺️ Map", subtitle: "View map", route: "/map" },
-          { title: "🌤 Weather", subtitle: "Check forecast", route: "/weather" },
-          { title: "🧳 To pack", subtitle: "Add items", route: "/newpage" },
+          { title: "🌦️ Weather", subtitle: "Check forecast", route: "/weather" },
+          { title: "🧳 To pack", subtitle: "Add items", route: "/packing" },
           { title: "📅 Itinerary", subtitle: "Plan your trip", route: "/createtrip" },
           { title: "💰 Budget", subtitle: "Calculate expenses", route: "/expenses" },
           { title: "🏞️ Places",subtitle:"Tourist Places",route:"/trip"},
+          { title: "📸 Images",subtitle:"Your Memories",route:"/image"},
         ].map((item, index) => (
           <MotiView
             from={{ translateX: 300, opacity: 0 }}

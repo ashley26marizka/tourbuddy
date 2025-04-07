@@ -10,14 +10,14 @@ const ExpenseTracker = () => {
   const [expenses, setExpenses] = useState([]);
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
-  const user = auth.currentUser; // Get logged-in user
+  const user = auth.currentUser; 
 
   useEffect(() => {
     if (user) {
       fetchExpenses();
     }
   }, [user]);
-
+ 
   const fetchExpenses = async () => {
     if (!user) return;
     

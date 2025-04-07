@@ -10,10 +10,8 @@ import {
 } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 
-import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 export default function HomeScreen() {
-  const navigation = useNavigation(); // Hook to access navigation
   const router = useRouter(); 
   return (
     <SafeAreaView style={styles.container}>
